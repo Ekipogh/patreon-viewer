@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+  Movies
+{% endblock %}
+{% block content_title %}
+  Movies
+{% endblock %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'movies/css/movies.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <div class="row">
+      {% for movie in movies %}
+        <div class="col-md-3">
+          <div class="card mb-4">
+            <div class="card-img-top" style="background-image: url('{{ movie.thumbnail }}'); height: 150px; background-size: cover; background-position: center;"></div>
+            <div class="card-body">
+              <h5 class="card-title">{{ movie.title }}</h5>
+              <a href="{{ movie.post_url }}" class="btn btn-primary">Patreon post</a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}
