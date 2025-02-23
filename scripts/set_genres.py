@@ -11,11 +11,11 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'patreon_viewer.settings')
 django.setup()
 
 from movies.models import Movie, Genre
+omdb_api_key = os.environ.get('OMDB_API_KEY')
+omdb_url = f"http://www.omdbapi.com/?apikey={omdb_api_key}&t="
+
 
 def set_genres():
-    omdb_api_key = os.environ.get('OMDB_API_KEY')
-    omdb_url = f"http://www.omdbapi.com/?apikey={omdb_api_key}&t="
-
     data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
     if not os.path.exists(data_dir):
         os.makedirs(data_dir)
@@ -54,13 +54,30 @@ def clean_genres():
         movie.genres.clear()
         movie.save()
 
+
 def clean_patreon_titles():
     for movie in Movie.objects.all():
         movie.patreon_title = movie.title
         movie.save()
 
 
+def set_type():
+    not_found = []
+    for movie in Movie.objects.all():
+        response = requests.get(omdb_url + movie.title)
+        data = response.json()
+        if data.get('Response') == 'False':
+            print(f"Error: {data.get('Error')} for {movie.title}")
+            not_found.append(movie.title)
+            continue
+        movie.type = data.get('Type')
+        movie.save()
+        print(f"Added type {movie.type} to {movie.title}")
+    print(f"Movies not found: {not_found}")
+    json.dump(not_found, open('not_found.json', 'w'))
+
+
 if __name__ == '__main__':
-    set_genres()
+    set_type()
     # clean_genres()
     # clean_patreon_titles()

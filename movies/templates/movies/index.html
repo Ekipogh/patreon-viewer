@@ -3,15 +3,53 @@
 {% block title %}
   Movies
 {% endblock %}
-{% block content_title %}
-  Movies
-{% endblock %}
 {% block css %}
   <link rel="stylesheet" href="{% static 'movies/css/movies.css' %}" />
+  <link rel="stylesheet" href="{% static 'awesomplete/awesomplete.css' %}" />
 {% endblock %}
 
 {% block content %}
+  <header class="p-3 mb-3 border-bottom">
+    <div class="container">
+      <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+            <img src="https://c10.patreonusercontent.com/4/patreon-media/p/campaign/6949856/606374b8296e4cdda34df2423b7a24b9/eyJoIjoxMDAsInciOjEwMH0%3D/2.jpg?token-time=1741564800&token-hash=xVJ_I0nsquF6nLnqH_na0K-cmHSnyT_MTuJbpXwKXgg%3D" width="20" height="20" class="me-2"/>
+            <span class="fs-4">Badd Medicine</span>
+          </a>
+
+        <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+          <li><a href="/movies?type=movie" class="nav-link px-2 link-dark">Movies</a></li>
+          <li><a href="/movies?type=series" class="nav-link px-2 link-dark">Series</a></li>
+        </ul>
+      </div>
+    </div>
+  </header>
   <div class="container">
+    <div class="row mb-4">
+      <div class="col-md-6">
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="Search movies" id="movie-search" onchange="submit_name()"
+         {% if selected_title %}value="{{ selected_title }}"{% endif %} />
+        <div class="input-group-append">
+        <button class="btn btn-outline-secondary" type="button" onclick="clear_search()">x</button>
+        </div>
+      </div>
+      </div>
+      <div class="col-md-3">
+      <select name="genre" id="genre" class="form-control" onchange="select_genre()">
+        <option value="">All genres</option>
+        {% for genre in all_genres %}
+        <option value="{{ genre }}">{{ genre }}</option>
+        {% endfor %}
+      </select>
+      </div>
+      <div class="col-md-3">
+      {% for selected_g in selected_genre %}
+        <input type="button" class="btn btn-secondary" value="{{ selected_g }} x" onclick="remove_genre('{{ selected_g }}')" />
+      {% endfor %}
+      </div>
+    </div>
+
     <div class="row">
       {% for movie in movies %}
         <div class="col-md-3">
@@ -19,11 +57,65 @@
             <div class="card-img-top" style="background-image: url('{{ movie.thumbnail }}'); height: 150px; background-size: cover; background-position: center;"></div>
             <div class="card-body">
               <h5 class="card-title">{{ movie.title }}</h5>
-              <a href="{{ movie.post_url }}" class="btn btn-primary">Patreon post</a>
+              <a href="{{ movie.post_url }}" class="btn btn-primary" target="_blank">Patreon post</a>
             </div>
           </div>
         </div>
       {% endfor %}
     </div>
   </div>
+{% endblock %}
+{% block js %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"></script>
+  <script>
+    {% comment %} document.addEventListener("DOMContentLoaded", function() {
+      var movieTitles = [
+        {% for movie in movies %}
+          "{{ movie.title }}"{% if not forloop.last %},{% endif %}
+        {% endfor %}
+      ];
+      new Awesomplete(document.getElementById("movie-search"), {
+        list: movieTitles
+      });
+    }); {% endcomment %}
+
+    function remove_genre(remove_genre) {
+      var url = new URL(window.location.href);
+      var genre = url.searchParams.get("genre");
+      var new_genre = genre.replace(remove_genre, "");
+      var new_genre = new_genre.replace(",,", ",");
+      var new_genre = new_genre.replace(/^,|,$/g, "");
+      url.searchParams.set("genre", new_genre);
+      window.location.href = url;
+    }
+
+    function select_genre() {
+      console.log("select_genre");
+      var url = new URL(window.location.href);
+      var genre = document.getElementById("genre").value;
+      if (genre) {
+        var new_genre = url.searchParams.get("genre");
+        if (new_genre) {
+          new_genre = new_genre + "," + genre;
+        } else {
+          new_genre = genre;
+        }
+        url.searchParams.set("genre", new_genre);
+      } else {
+        url.searchParams.delete("genre");
+      }
+      window.location.href = url;
+    }
+    function submit_name() {
+      var url = new URL(window.location.href);
+      var name = document.getElementById("movie-search").value;
+      url.searchParams.set("title", name);
+      window.location.href = url;
+    }
+    function clear_search() {
+      var url = new URL(window.location.href);
+      url.searchParams.delete("title");
+      window.location.href = url;
+    }
+  </script>
 {% endblock %}

@@ -8,6 +8,11 @@ class Movie(models.Model):
     post_url = models.URLField()
     thumbnail = models.URLField(max_length=500)
     genres = models.ManyToManyField('Genre', related_name='movies', blank=True)
+    TYPE_CHOICES = (
+        ('movie', 'Movie'),
+        ('series', 'Series'),
+    )
+    type = models.CharField(max_length=10, choices=TYPE_CHOICES, default='movie')
 
     def __str__(self):
         return self.title
