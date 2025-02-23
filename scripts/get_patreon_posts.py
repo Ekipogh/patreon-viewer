@@ -51,7 +51,7 @@ def test_get_first_post(driver):
 
 
 def get_collections(driver):
-    ignore_titles = ["Q & A with Badd Medicine", "Poll collection"]
+    ignore_titles = ["Q & A with Badd Medicine", "Poll collection", "Trailer Premiers", "Monthly Schedule update"]
     # [ {title: "title", thumbnail: "thumbnail.jpg"  url: "url"}, ...]
     collections = []
     driver.get(baddmedicine_collections)
