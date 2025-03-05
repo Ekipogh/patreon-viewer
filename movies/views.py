@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.shortcuts import render
 from .models import Movie, Genre
 
@@ -26,10 +27,16 @@ def index(request):
     all_years = set()
     for movie in movies:
         if movie.release_year_range:
-            if "-" in movie.release_year_range:
-                movie_start_year, movie_end_year = movie.release_year_range.split('-')
-                all_years.add(int(movie_start_year))
-                all_years.add(int(movie_end_year))
+            if Movie.RELEASE_SEPARATOR in movie.release_year_range:
+                movie_start_year, movie_end_year = movie.release_year_range.split(Movie.RELEASE_SEPARATOR)
+                if movie_start_year.isdigit():
+                    all_years.add(int(movie_start_year))
+                else:
+                    all_years.add(datetime.now().year)
+                if movie_end_year.isdigit():
+                    all_years.add(int(movie_end_year))
+                else:
+                    all_years.add(datetime.now().year)
             else:
                 all_years.add(int(movie.release_year_range))
     if start_year or end_year:
