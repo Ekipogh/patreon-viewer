@@ -27,8 +27,9 @@ def index(request):
     for movie in movies:
         if movie.release_year_range:
             if "-" in movie.release_year_range:
-                all_years.add(int(movie.release_year_range[:4]))
-                all_years.add(int(movie.release_year_range[4:]))
+                start_year, end_year = movie.release_year_range.split('-')
+                all_years.add(int(start_year))
+                all_years.add(int(end_year))
             else:
                 all_years.add(int(movie.release_year_range))
     if start_year or end_year:
