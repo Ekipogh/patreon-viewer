@@ -27,26 +27,50 @@
   <div class="container">
     <div class="row mb-4">
       <div class="col-md-6">
-      <div class="input-group">
-        <input type="text" class="form-control" placeholder="Search movies" id="movie-search" onchange="submit_name()"
-         {% if selected_title %}value="{{ selected_title }}"{% endif %} onchange="submit_name"/>
-        <div class="input-group-append">
-        <button class="btn btn-outline-secondary" type="button" onclick="clear_search()">x</button>
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="Search movies" id="movie-search" onchange="submit_name()"
+          {% if selected_title %}value="{{ selected_title }}"{% endif %} onchange="submit_name"/>
+          <div class="input-group-append">
+          <button class="btn btn-outline-secondary" type="button" onclick="clear_search()">x</button>
+          </div>
         </div>
       </div>
+      <div class="col-md-3">
+        <select name="genre" id="genre" class="form-control" onchange="select_genre()">
+          <option value="">All genres</option>
+          {% for genre in all_genres %}
+          <option value="{{ genre }}">{{ genre }}</option>
+          {% endfor %}
+        </select>
       </div>
       <div class="col-md-3">
-      <select name="genre" id="genre" class="form-control" onchange="select_genre()">
-        <option value="">All genres</option>
-        {% for genre in all_genres %}
-        <option value="{{ genre }}">{{ genre }}</option>
+        {% for selected_g in selected_genre %}
+          <input type="button" class="btn btn-secondary" value="{{ selected_g }} x" onclick="remove_genre('{{ selected_g }}')" />
         {% endfor %}
-      </select>
       </div>
-      <div class="col-md-3">
-      {% for selected_g in selected_genre %}
-        <input type="button" class="btn btn-secondary" value="{{ selected_g }} x" onclick="remove_genre('{{ selected_g }}')" />
-      {% endfor %}
+    </div>
+    <div class="row">
+      <div class="col mb-2 col-md-3">
+        <div class="form-floating">
+          <select name="year_start" id="year_start" class="form-control" onchange="select_year()">
+            <option value="">All years</option>
+            {% for year in all_years %}
+            <option value="{{ year }}">{{ year }}</option>
+            {% endfor %}
+          </select>
+          <label for="year_start">Year start</label>
+        </div>
+      </div>
+      <div class="col mb-2 col-md-3">
+        <div class="form-floating">
+          <select name="year_end" id="year_end" class="form-control" onchange="select_year()">
+            <option value="">All years</option>
+            {% for year in all_years %}
+            <option value="{{ year }}">{{ year }}</option>
+            {% endfor %}
+          </select>
+          <label for="year_end">Year end</label>
+        </div>
       </div>
     </div>
 

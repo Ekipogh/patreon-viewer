@@ -16,6 +16,7 @@ class Movie(models.Model):
     type = models.CharField(
         max_length=10, choices=TYPE_CHOICES, default='movie')
     patreon_id = models.IntegerField(unique=True, blank=True, null=True)
+    release_year = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
         return self.title

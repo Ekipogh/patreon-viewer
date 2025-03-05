@@ -96,6 +96,15 @@ def get_type_from_omdb(title):
         return data.get('Type')
     return None
 
+def get_release_year_from_omdb(title):
+    omdb_key = os.environ.get('OMDB_API_KEY')
+    url = f"http://www.omdbapi.com/?apikey={omdb_key}&t={title}"
+    response = requests.get(url)
+    data = response.json()
+    if data.get('Response') == 'True':
+        return data.get('Year')
+    return None
+
 def parse_id(url):
     return url.split('/')[-1]
 
@@ -128,6 +137,13 @@ def update_django_database(collections):
             media_type = "movie" # default to movie
             not_found.add(title)
 
+        release_year = get_release_year_from_omdb(title)
+        if not release_year:
+            print(f"Could not find release year for {title}")
+            print(f"Might need to fix the title")
+            release_year = None
+            not_found.add(title)
+
         movie, created = Movie.objects.get_or_create(
             title=title)
         is_movie_title_fixed = not created and movie.title != patreon_title
@@ -138,6 +154,7 @@ def update_django_database(collections):
             movie.thumbnail = thumbnail
             movie.post_url = url
             movie.type = media_type
+            movie.release_year = release_year
             movie.genres.set(genres)
             movie.save()
             print(f"Added movie: {title}")
