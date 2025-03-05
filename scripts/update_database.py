@@ -154,7 +154,7 @@ def update_django_database(collections):
             movie.thumbnail = thumbnail
             movie.post_url = url
             movie.type = media_type
-            movie.release_year = release_year
+            movie.release_year_range = release_year
             movie.genres.set(genres)
             movie.save()
             print(f"Added movie: {title}")
@@ -175,6 +175,9 @@ def fix_titles(not_found):
     return
 
 def try_to_fix_genres_and_type(movie):
+    fixed_names = json.load(open("fixed_names.json"))
+    if movie.title in fixed_names:
+        movie.title = fixed_names[movie.title]
     from movies.models import Genre
     genre_list = get_genre_from_omdb(movie.title)
     if not genre_list:

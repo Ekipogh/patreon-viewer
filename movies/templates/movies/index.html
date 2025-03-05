@@ -55,7 +55,12 @@
           <select name="year_start" id="year_start" class="form-control" onchange="select_year()">
             <option value="">All years</option>
             {% for year in all_years %}
-            <option value="{{ year }}">{{ year }}</option>
+            <option value="{{ year }}"
+            {% if selected_start_year|stringformat:"s" == year|stringformat:"s" %}
+            selected
+            {% endif %}>
+              {{ year }}
+            </option>
             {% endfor %}
           </select>
           <label for="year_start">Year start</label>
@@ -66,7 +71,7 @@
           <select name="year_end" id="year_end" class="form-control" onchange="select_year()">
             <option value="">All years</option>
             {% for year in all_years %}
-            <option value="{{ year }}">{{ year }}</option>
+            <option value="{{ year }}" {% if selected_end_year|stringformat:"s" == year|stringformat:"s" %}selected{% endif %}>{{ year }}</option>
             {% endfor %}
           </select>
           <label for="year_end">Year end</label>
@@ -140,6 +145,22 @@
     function clear_search() {
       var url = new URL(window.location.href);
       url.searchParams.delete("title");
+      window.location.href = url;
+    }
+    function select_year() {
+      var url = new URL(window.location.href);
+      var start_year = document.getElementById("year_start").value;
+      var end_year = document.getElementById("year_end").value;
+      if (start_year) {
+        url.searchParams.set("start_year", start_year);
+      } else {
+        url.searchParams.delete("start_year");
+      }
+      if (end_year) {
+        url.searchParams.set("end_year", end_year);
+      } else {
+        url.searchParams.delete("end_year");
+      }
       window.location.href = url;
     }
   </script>
