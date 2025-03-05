@@ -1,9 +1,11 @@
+from datetime import datetime
 from django.db import models
 
 # Create your models here.
 
 
 class Movie(models.Model):
+    RELEASE_SEPARATOR = '–'
     title = models.CharField(max_length=200, unique=True)
     patreon_title = models.CharField(max_length=200, blank=True)
     post_url = models.URLField()
@@ -19,14 +21,21 @@ class Movie(models.Model):
     release_year_range = models.CharField(max_length=9, blank=True, null=True)
 
     def is_in_range(self, year_start, year_end):
+        current_year = datetime.now().year
         if not self.release_year_range:
             return False
 
         try:
-            if "-" in self.release_year_range:
-                movie_year_start, movie_year_end = map(int, self.release_year_range.split("-"))
+            if Movie.RELEASE_SEPARATOR in self.release_year_range:
+                movie_year_start_string, movie_year_end_string = self.release_year_range.split(
+                    Movie.RELEASE_SEPARATOR)
+                movie_year_start = int(
+                    movie_year_start_string) if movie_year_start_string else current_year
+                movie_year_end = int(
+                    movie_year_end_string) if movie_year_end_string else current_year
             else:
-                movie_year_start = movie_year_end = int(self.release_year_range)
+                movie_year_start = movie_year_end = int(
+                    self.release_year_range)
         except ValueError:
             return False
 

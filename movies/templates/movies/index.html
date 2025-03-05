@@ -86,6 +86,7 @@
             <div class="card-img-top" style="background-image: url('{{ movie.thumbnail }}'); height: 150px; background-size: cover; background-position: center;"></div>
             <div class="card-body">
               <h5 class="card-title">{{ movie.title }}</h5>
+              <h6 class="card-subtitle text-muted">{{ movie.release_year_range }}</h6>
               <p class="card-text">{{ movie.genre_text }}</p>
               <a href="{{ movie.post_url }}" class="btn btn-primary" target="_blank">Patreon post</a>
             </div>
