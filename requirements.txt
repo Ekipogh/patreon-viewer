@@ -1,0 +1,4 @@
+Django
+selenium
+django-bootstrap-v5
+requests

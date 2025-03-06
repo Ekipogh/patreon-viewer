@@ -167,17 +167,18 @@ def fix_titles(not_found):
     from movies.models import Movie
     for title in not_found:
         movie = Movie.objects.get(title=title)
-        fixed_title = input(f"Fix title for {title}: ")
-        movie.title = fixed_title
         try_to_fix_genres_and_type(movie)
         movie.save()
-        print(f"Fixed title for {title} to {fixed_title}")
+        print(f"Fixed title for {title}")
     return
 
 def try_to_fix_genres_and_type(movie):
-    fixed_names = json.load(open("fixed_names.json"))
+    fixed_names = json.load(open("scripts/data/fixed_names.json"))
     if movie.title in fixed_names:
         movie.title = fixed_names[movie.title]
+    else:
+        fixed_title = input(f"Fix title for {movie.title}: ")
+        movie.title = fixed_title
     from movies.models import Genre
     genre_list = get_genre_from_omdb(movie.title)
     if not genre_list:
